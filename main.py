@@ -1,6 +1,6 @@
 # (C) @CodeXBots
 
-import os, time, math, json
+import os, time, math, json, logging 
 import string, random, traceback
 import asyncio, datetime, aiofiles
 import requests, aiohttp
@@ -10,6 +10,14 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from pyrogram.errors import FloodWait, InputUserDeactivated, UserIsBlocked, PeerIdInvalid, UserNotParticipant, UserBannedInChannel
 from pyrogram.errors.exceptions.bad_request_400 import PeerIdInvalid
 from database import Database
+
+
+# Set up basic logging configuration
+logging.basicConfig(
+    level=logging.INFO,  # Log level set to INFO
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[logging.StreamHandler()]  # Log to the console
+)
 
 
 UPDATE_CHANNEL = os.environ.get("UPDATE_CHANNEL", "")
@@ -128,114 +136,157 @@ async def donation(bot, message):
     await yt.delete()
     await message.delete()
 
+
+
 def upload_image_requests(image_path, upload_service):
+    logging.info(f"Initiating upload process for {image_path} to {upload_service}.")
+    
     if upload_service == "envs.sh":
         upload_url = "https://envs.sh"
+        logging.info("Using envs.sh for upload.")
     elif upload_service == "imgbb":
         upload_url = f"https://api.imgbb.com/1/upload?key={IMGBB_API_KEY}"
+        logging.info(f"Using imgbb for upload with URL {upload_url}.")
     else:
+        logging.error("Unsupported upload service provided.")
         raise ValueError("Unsupported upload service")
 
     try:
+        logging.info(f"Opening file {image_path} for upload.")
         with open(image_path, 'rb') as file:
-            files = {'file': file} 
+            files = {'file': file}
+            logging.info(f"Sending POST request to {upload_url}.")
             response = requests.post(upload_url, files=files)
 
+            logging.info(f"Response status code: {response.status_code}")
             if response.status_code == 200:
                 if upload_service == "imgbb":
                     response_data = response.json()
+                    logging.info(f"Response JSON: {response_data}")
                     if response_data['success']:
-                        return response_data['data']['url']
+                        image_url = response_data['data']['url']
+                        logging.info(f"Upload successful. Image URL: {image_url}")
+                        return image_url
                     else:
-                        raise Exception(response_data['error']['message'])
+                        error_message = response_data.get('error', {}).get('message', 'Unknown error')
+                        logging.error(f"imgbb upload failed: {error_message}")
+                        raise Exception(error_message)
                 return response.text.strip()  # for envs.sh
             else:
+                logging.error(f"Upload failed with status code {response.status_code}")
                 raise Exception(f"Upload failed with status code {response.status_code}")
 
     except Exception as e:
-        print(f"Error during upload: {e}")
+        logging.exception(f"Error during upload: {e}")
         return None
 
 @Bot.on_message(filters.media & filters.private)
 async def upload(client, message):
-    if not await db.is_user_exist(message.from_user.id):
-        await db.add_user(message.from_user.id)
+    try:
+        if not await db.is_user_exist(message.from_user.id):
+            await db.add_user(message.from_user.id)
+            logging.info(f"New user added to database: {message.from_user.id}")
 
-    if UPDATE_CHANNEL:
-        try:
-            user = await client.get_chat_member(UPDATE_CHANNEL, message.chat.id)
-            if user.status == "kicked":
-                await message.reply_text(text="You are banned!")
-                return
-        except UserNotParticipant:
-            await message.reply_text(
-                text=FORCE_SUBSCRIBE_TEXT,
-                reply_markup=InlineKeyboardMarkup(
-                    [[InlineKeyboardButton(text="⛔️ ᴊᴏɪɴ ɴᴏᴡ ⛔️", url=f"https://telegram.me/{UPDATE_CHANNEL}")]]
+        if UPDATE_CHANNEL:
+            try:
+                user = await client.get_chat_member(UPDATE_CHANNEL, message.chat.id)
+                if user.status == "kicked":
+                    await message.reply_text("You are banned!")
+                    logging.warning(f"User {message.chat.id} is banned.")
+                    return
+            except UserNotParticipant:
+                await message.reply_text(
+                    text=FORCE_SUBSCRIBE_TEXT,
+                    reply_markup=InlineKeyboardMarkup(
+                        [[InlineKeyboardButton(text="⛔️ ᴊᴏɪɴ ɴᴏᴡ ⛔️", url=f"https://telegram.me/{UPDATE_CHANNEL}")]]
+                    )
                 )
-            )
-            return
-        except Exception as error:
-            print(error)
-            await message.reply_text(text="<b>ꜱᴏᴍᴇᴛʜɪɴɢ ᴡᴇɴᴛ ᴡʀᴏɴɢ ᴄᴏɴᴛᴀᴄᴛ ᴍʏ <a href='https://telegram.me/CodeXBro'>ᴄʀᴇᴀᴛᴏʀ</a>.</b>", disable_web_page_preview=True)
+                logging.info(f"User {message.chat.id} is not part of the update channel.")
+                return
+            except Exception as error:
+                logging.exception(f"Error checking user subscription: {error}")
+                await message.reply_text(
+                    "<b>ꜱᴏᴍᴇᴛʜɪɴɢ ᴡᴇɴᴛ ᴡʀᴏɴɢ. Contact <a href='https://telegram.me/CodeXBro'>Creator</a>.</b>", 
+                    disable_web_page_preview=True
+                )
+                return
+
+        file_size_limit = 10 * 1024 * 1024  # 10 MB in bytes
+        if (message.document and message.document.file_size > file_size_limit) or (message.photo and message.photo.file_size > file_size_limit):
+            await message.reply_text("<b>⚠️ Send a media file under 10 MB</b>")
+            logging.warning(f"User {message.chat.id} tried to send a file larger than 10 MB.")
             return
 
-    file_size_limit = 10 * 1024 * 1024  # 10 MB in bytes
-    if (message.document and message.document.file_size > file_size_limit) or (message.photo and message.photo.file_size > file_size_limit):
-        await message.reply_text("<b>⚠️ ꜱᴇɴᴅ ᴀ ᴍᴇᴅɪᴀ ᴜɴᴅᴇʀ 𝟷𝟶 ᴍʙ</b>")
-        return
+        # Send a message to choose the upload service
+        await message.reply_text(
+            "<code>Select upload service:</code>",
+            reply_markup=InlineKeyboardMarkup([
+                [
+                    InlineKeyboardButton(text="envs.sh", callback_data="upload_envs"),
+                    InlineKeyboardButton(text="imgbb", callback_data="upload_imgbb")
+                ]
+            ])
+        )
+        logging.info(f"Presented upload options to user {message.chat.id}.")
 
-    # Send a message to choose the upload service
-    await message.reply_text(
-        "<code>Select upload service:</code>",
-        reply_markup=InlineKeyboardMarkup([
-            [
-                InlineKeyboardButton(text="envs.sh", callback_data="upload_envs"),
-                InlineKeyboardButton(text="imgbb", callback_data="upload_imgbb")
-            ]
-        ])
-    )
+    except Exception as e:
+        logging.exception(f"Error in upload message handler: {e}")
 
 @Bot.on_callback_query(filters.regex(r"^upload_(envs|imgbb)$"))
 async def handle_upload(client, query):
-    upload_service = query.data.split('_')[1]
-
-    # Get the original message that had the media
-    original_message = await client.get_message(query.message.chat.id, query.message.reply_to_message.message_id)
-    
-    # Download the media
-    path = await original_message.download()
-
-    uploading_message = await query.message.reply_text(f"<code>Uploading to {upload_service}...</code>")
-
     try:
-        image_url = upload_image_requests(path, upload_service)
-        if not image_url:
-            raise Exception("Failed to upload file.")
-    except Exception as error:
-        await uploading_message.edit_text(f"Upload failed: {error}")
-        return
+        upload_service = query.data.split('_')[1]
+        logging.info(f"User {query.from_user.id} selected {upload_service} for upload.")
 
-    # Clean up the downloaded file
-    try:
-        os.remove(path)
-    except Exception as error:
-        print(f"Error removing file: {error}")
+        # Ensure the user replied to the original media message
+        if not query.message.reply_to_message or not (query.message.reply_to_message.photo or query.message.reply_to_message.document):
+            await query.message.reply_text("⚠️ Please reply to a media message to upload.")
+            logging.warning(f"User {query.from_user.id} did not reply to a media message.")
+            return
 
-    await uploading_message.delete()
+        # Get the original message that had the media
+        original_message = await client.get_message(query.message.chat.id, query.message.reply_to_message.message_id)
+        logging.info(f"Downloading media for user {query.from_user.id}.")
+        path = await original_message.download()
 
-    await query.message.reply_photo(
-        photo=image_url,
-        caption=f"<b>Upload completed to {upload_service} 👇</b>\n\nLink:\n\n<code>{image_url}</code>\n\n<b>ʙʏ - <a href='https://telegram.me/CodeXBro'>ʀᴀʜᴜʟ</a></b>",
-        reply_markup=InlineKeyboardMarkup([[
-            InlineKeyboardButton(text="• ᴏᴘᴇɴ ʟɪɴᴋ •", url=image_url),
-            InlineKeyboardButton(text="• sʜᴀʀᴇ ʟɪɴᴋ •", url=f"https://telegram.me/share/url?url={image_url}")
-        ], [
-            InlineKeyboardButton(text="❌   ᴄʟᴏsᴇ   ❌", callback_data="close_data")
-        ]])
-    )
-    await asyncio.sleep(120)
-    await query.message.delete()
+        uploading_message = await query.message.reply_text(f"<code>Uploading to {upload_service}...</code>")
+        logging.info(f"Uploading media to {upload_service} for user {query.from_user.id}.")
+
+        try:
+            image_url = upload_image_requests(path, upload_service)
+            if not image_url or not image_url.startswith('http'):
+                raise Exception("Failed to upload file or invalid URL.")
+        except Exception as error:
+            logging.exception(f"Error during file upload for user {query.from_user.id}: {error}")
+            await uploading_message.edit_text(f"Upload failed: {error}")
+            return
+
+        try:
+            os.remove(path)
+            logging.info(f"Temporary file {path} deleted after upload.")
+        except Exception as error:
+            logging.exception(f"Error deleting file {path}: {error}")
+
+        await uploading_message.delete()
+        await query.message.reply_photo(
+            photo=image_url,
+            caption=f"<b>Upload completed to {upload_service} 👇</b>\n\nLink:\n\n<code>{image_url}</code>\n\n<b>ʙʏ - <a href='https://telegram.me/CodeXBro'>ʀᴀʜᴜʟ</a></b>",
+            reply_markup=InlineKeyboardMarkup([[
+                InlineKeyboardButton(text="• ᴏᴘᴇɴ ʟɪɴᴋ •", url=image_url),
+                InlineKeyboardButton(text="• sʜᴀʀᴇ ʟɪɴᴋ •", url=f"https://telegram.me/share/url?url={image_url}")
+            ], [
+                InlineKeyboardButton(text="❌   ᴄʟᴏsᴇ   ❌", callback_data="close_data")
+            ]])
+        )
+        logging.info(f"Upload link sent to user {query.from_user.id}.")
+
+        await asyncio.sleep(120)
+        await query.message.delete()
+        logging.info(f"Message deleted after 120 seconds for user {query.from_user.id}.")
+
+    except Exception as e:
+        logging.exception(f"Error in callback handler: {e}")
+
 
 @Bot.on_message(filters.private & filters.command("users") & filters.user(BOT_OWNER))
 async def users(bot, update):
