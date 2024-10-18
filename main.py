@@ -218,16 +218,17 @@ async def upload(client, message):
             return
 
         # Send a message to choose the upload service
-        await message.reply_text(
-            "<code>Select upload service:</code>",
-            reply_markup=InlineKeyboardMarkup([
-                [
-                    InlineKeyboardButton(text="envs.sh", callback_data="upload_envs"),
-                    InlineKeyboardButton(text="imgbb", callback_data="upload_imgbb")
-                ]
-            ])
-        )
-        logging.info(f"Presented upload options to user {message.chat.id}.")
+        await client.send_message(
+    chat_id=message.chat.id,
+    text="<b>Select upload service:</b>n<code>Please choose one of the options below:</code>",
+    reply_markup=InlineKeyboardMarkup([
+        [
+            InlineKeyboardButton(text="envs.sh", callback_data="upload_envs"),
+            InlineKeyboardButton(text="imgbb", callback_data="upload_imgbb")
+        ]
+    ]),
+    reply_to_message_id=message.id
+)
 
     except Exception as e:
         logging.exception(f"Error in upload message handler: {e}")
