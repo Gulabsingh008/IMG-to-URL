@@ -95,6 +95,59 @@ async def send_msg(user_id, message):
                 return 500, f"{user_id} : {traceback.format_exc()}\n"
 
 
+@Client.on_callback_query(filters.regex(r'^imgbb$'))
+async def imgbb_upload(bot: Client, update: CallbackQuery):
+    message = update.message
+    await update.answer_callback_query(text="Processing...", show_alert=False)
+        text = await message.reply_text("Downloading to My Server ...", disable_web_page_preview=True)
+
+        # Download the media
+        media = await message.reply_to_message.download()
+
+        await text.edit_text("Downloading Completed. Now I am Uploading to imgbb ...", disable_web_page_preview=True)
+
+        # Uploading to imgbb
+        try:
+            with open(media, 'rb') as file:
+                response = requests.post(
+                    f"https://api.imgbb.com/1/upload?key={IMGBB_API_KEY}",
+                    files={"image": file}
+                )
+                response_data = response.json()
+
+                if response_data['success']:
+                    image_url = response_data['data']['url']
+                else:
+                    raise Exception(response_data['error']['message'])
+        except Exception as error:
+            print(error)
+            await text.edit_text(f"Error: {error}", disable_web_page_preview=True)
+            return
+
+        # Clean up the downloaded file
+        try:
+            os.remove(media)
+        except Exception as error:
+            print(error)
+
+        await text.edit_text(
+            text=f"Link:\n\n{image_url}",
+            disable_web_page_preview=True,
+            reply_markup=InlineKeyboardMarkup([
+                [
+                    InlineKeyboardButton(text="Open Link", url=image_url),
+                    InlineKeyboardButton(text="Share Link", url=f"https://telegram.me/share/url?url={image_url}")
+                ],
+                [
+                    InlineKeyboardButton(text="✗ Close ✗", callback_data="close")
+                ]
+            ])
+        )
+
+    except Exception as e:
+        logging.exception(f"Error in imgbb upload: {e}")
+        await message.reply_text(f"Error: {e}", disable_web_page_preview=True)
+
 @Bot.on_callback_query()
 async def cb_handler(bot, update):
     if update.data == "home":
