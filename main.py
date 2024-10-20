@@ -109,16 +109,12 @@ async def cb_handler(bot, update):
             reply_markup=ABOUT_BUTTONS,
             disable_web_page_preview=True
         )
-    elif update.data == "upload_envs.sh":
-                upload_service = update.data.split('_')[1]
-                await handle_upload(bot, update, upload_service)
-
-    elif update.data == "upload_imgbb":
-                upload_service = update.data.split('_')[1]
-                await handle_upload(bot, update, upload_service)
-
-    else:
-        await update.message.delete()
+         if update.data == "envs.sh":
+             await handle_upload(bot, update, "envs.sh")
+         elif update.data == "imgbb":
+             await handle_upload(bot, update, "imgbb")
+         else:
+             await update.message.delete()     
 
 @Bot.on_message(filters.private & filters.command(["start"]))
 async def start(bot, update):
@@ -225,8 +221,8 @@ async def upload(client, message):
             text="<b>Sᴇʟᴇᴄᴛ Tʜᴇ Uᴘʟᴏᴀᴅ Sᴇʀᴠɪᴄᴇ:</b>\n\n<code>Pʟᴇᴀsᴇ Cʜᴏᴏsᴇ Oᴘᴛɪᴏɴ Fʀᴏᴍ Bᴇʟᴏᴡ </code>",
             reply_markup=InlineKeyboardMarkup(
                                 [[
-                    InlineKeyboardButton(text="ᴇɴᴠs.sʜ", callback_data="upload_envs.sh"),
-                    InlineKeyboardButton(text="ɪᴍɢʙʙ", callback_data="upload_imgbb")
+                    InlineKeyboardButton(text="ᴇɴᴠs.sʜ", callback_data="envs.sh"),
+                    InlineKeyboardButton(text="ɪᴍɢʙʙ", callback_data="imgbb")
                                 ]]
                         ),
             reply_to_message_id=message.id
@@ -236,7 +232,7 @@ async def upload(client, message):
     except Exception as e:
         logging.exception(f"Error in upload message handler: {e}")
 
-#@Bot.on_callback_query(filters.regex(r"^upload_(envs|imgbb)$"))
+
 async def handle_upload(client, query, upload_service):
     try:
       #  upload_service = query.data.split('_')[1]
