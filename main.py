@@ -95,10 +95,22 @@ async def send_msg(user_id, message):
                 return 500, f"{user_id} : {traceback.format_exc()}\n"
 
 
+
 @Client.on_callback_query(filters.regex(r'^imgbb$'))
 async def imgbb_upload(bot: Client, update: CallbackQuery):
     message = update.message
     await update.answer_callback_query(text="Processing...", show_alert=False)
+
+    try:
+        replied = message.reply_to_message
+        if not replied:
+            await message.reply_text("Reply to a photo or video under 5MB.")
+            return
+
+        if not (replied.photo or replied.video or replied.animation):
+            await message.reply_text("Please reply to a photo, video, or GIF.")
+            return
+
         text = await message.reply_text("Downloading to My Server ...", disable_web_page_preview=True)
 
         # Download the media
