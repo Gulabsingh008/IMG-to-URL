@@ -9,7 +9,6 @@ from pyrogram.errors import FloodWait, InputUserDeactivated, UserIsBlocked, Peer
 from pyrogram.errors.exceptions.bad_request_400 import PeerIdInvalid
 from database import Database
 
-# Set up basic logging configuration
 logging.basicConfig(
     level=logging.INFO,  # Log level set to INFO
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -18,9 +17,10 @@ logging.basicConfig(
 
 UPDATE_CHANNEL = os.environ.get("UPDATE_CHANNEL", "")
 BOT_OWNER = int(os.environ["BOT_OWNER"])
+IMGBB_API_KEY = os.environ.get("IMGBB_API_KEY", "")
 DATABASE_URL = os.environ["DATABASE_URL"]
 db = Database(DATABASE_URL, "mediatourl")
-IMGBB_API_KEY = ""
+
 
 Bot = Client(
     "Media To Url Bot",
