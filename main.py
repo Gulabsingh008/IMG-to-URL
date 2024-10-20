@@ -97,7 +97,7 @@ async def send_msg(user_id, message):
 
 
 @Client.on_callback_query(filters.regex(r'^imgbb$'))
-async def imgbb_upload(bot: Client, update: CallbackQuery):
+async def imgbb_upload(bot, update):
     message = update.message
     await update.answer_callback_query(text="Processing...", show_alert=False)
 
