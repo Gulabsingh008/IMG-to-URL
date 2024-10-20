@@ -109,12 +109,7 @@ async def cb_handler(bot, update):
             reply_markup=ABOUT_BUTTONS,
             disable_web_page_preview=True
         )
-         if update.data == "envs.sh":
-             await handle_upload(bot, update, "envs.sh")
-         elif update.data == "imgbb":
-             await handle_upload(bot, update, "imgbb")
-         else:
-             await update.message.delete()     
+   
 
 @Bot.on_message(filters.private & filters.command(["start"]))
 async def start(bot, update):
@@ -136,47 +131,7 @@ async def donation(bot, message):
     await yt.delete()
     await message.delete()
 
-def upload_image_requests(image_path, upload_service):
-    logging.info(f"Initiating upload process for {image_path} to {upload_service}.")
 
-    if upload_service == "envs.sh":
-        upload_url = "https://envs.sh"
-        logging.info("Using envs.sh for upload.")
-    elif upload_service == "imgbb":
-        upload_url = f"https://api.imgbb.com/1/upload?key={IMGBB_API_KEY}"
-        logging.info(f"Using imgbb for upload with URL {upload_url}.")
-    else:
-        logging.error("Unsupported upload service provided.")
-        raise ValueError("Unsupported upload service")
-
-    try:
-        logging.info(f"Opening file {image_path} for upload.")
-        with open(image_path, 'rb') as file:
-            files = {'file': file}
-            logging.info(f"Sending POST request to {upload_url}.")
-            response = requests.post(upload_url, files=files)
-
-            logging.info(f"Response status code: {response.status_code}")
-            if response.status_code == 200:
-                if upload_service == "imgbb":
-                    response_data = response.json()
-                    logging.info(f"Response JSON: {response_data}")
-                    if response_data['success']:
-                        image_url = response_data['data']['url']
-                        logging.info(f"Upload successful. Image URL: {image_url}")
-                        return image_url
-                    else:
-                        error_message = response_data.get('error', {}).get('message', 'Unknown error')
-                        logging.error(f"imgbb upload failed: {error_message}")
-                        raise Exception(error_message)
-                return response.text.strip()  # for envs.sh
-            else:
-                logging.error(f"Upload failed with status code {response.status_code}")
-                raise Exception(f"Upload failed with status code {response.status_code}")
-
-    except Exception as e:
-        logging.exception(f"Error during upload: {e}")
-        return None
 
 @Bot.on_message(filters.media & filters.private)
 async def upload(client, message):
@@ -233,56 +188,7 @@ async def upload(client, message):
         logging.exception(f"Error in upload message handler: {e}")
 
 
-async def handle_upload(client, query, upload_service):
-    try:
-      #  upload_service = query.data.split('_')[1]
-        logging.info(f"User {query.from_user.id} selected {upload_service} for upload.")
 
-        # Get the original message that had the media (the message that the buttons were replying to)
-        original_message = query.message.reply_to_message
-        if not original_message or not (original_message.photo or original_message.document):
-            await query.message.reply_text("⚠️ ᴘʟᴇᴀsᴇ ʀᴇᴘʟʏ ᴛᴏ ᴍᴇᴅɪᴀ ᴛᴏ ᴜᴘʟᴏᴀᴅ.")
-            logging.warning(f"User {query.from_user.id} did not reply to a media message.")
-            return
-
-        # Download the media
-        logging.info(f"Downloading media for user {query.from_user.id}.")
-        path = await original_message.download()
-
-        uploading_message = await query.message.reply_text(f"<code>ᴜᴘʟᴏᴀᴅɪɴɢ ᴍᴇᴅɪᴀ ᴛᴏ {upload_service}...</code>")
-        logging.info(f"Uploading media to {upload_service} for user {query.from_user.id}.")
-
-        try:
-            image_url = upload_image_requests(path, upload_service)
-            if not image_url or not image_url.startswith('http'):
-                raise Exception("Failed to upload file or invalid URL.")
-        except Exception as error:
-            logging.exception(f"Error during file upload for user {query.from_user.id}: {error}")
-            await uploading_message.edit_text(f"Upload failed: {error}")
-            return
-
-        try:
-            os.remove(path)
-            logging.info(f"Temporary file {path} deleted after upload.")
-        except Exception as error:
-            logging.exception(f"Error deleting file {path}: {error}")
-
-        await uploading_message.delete()
-        await query.message.reply_photo(
-            photo=image_url,
-            caption=f"<b>ᴜᴘʟᴏᴀᴅ ᴄᴏᴍᴘʟᴇᴛᴇ ᴛᴏ {upload_service} 👇</b>\n\nLink:\n\n<code>{image_url}</code>\n\n<b>ʙʏ - <a href='https://telegram.me/Silicon_Official'>Sɪʟɪᴄᴏɴ Dᴇᴠᴇʟᴏᴘᴇʀ ⚠️</a></b>",
-            reply_markup=InlineKeyboardMarkup([[
-                InlineKeyboardButton(text="• ᴏᴘᴇɴ ʟɪɴᴋ •", url=image_url),
-                InlineKeyboardButton(text="• sʜᴀʀᴇ ʟɪɴᴋ •", url=f"https://telegram.me/share/url?url={image_url}")
-            ],[
-                InlineKeyboardButton(text="❌   ᴄʟᴏsᴇ   ❌", callback_data="close_data")
-            ]])
-        )
-        logging.info(f"Upload link sent to user {query.from_user.id}.")
-        await query.message.delete()
-        logging.info(f"Message deleted after 120 seconds for user {query.from_user.id}.")
-    except Exception as e:
-        logging.exception(f"Error in callback handler: {e}")
 
 @Bot.on_message(filters.private & filters.command("users") & filters.user(BOT_OWNER))
 async def users(bot, update):
