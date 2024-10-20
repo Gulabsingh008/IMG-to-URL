@@ -33,18 +33,20 @@ START_TEXT = """**{},
 
 ɪ ᴀᴍ ᴍᴇᴅɪᴀ ᴛᴏ ᴜʀʟ ᴜᴘʟᴏᴀᴅᴇʀ ʙᴏᴛ. 
 
-ɪ ᴄᴀɴ ᴄᴏɴᴠᴇʀᴛ ᴀɴʏ ᴍᴇᴅɪᴀ (ᴘʜᴏᴛᴏ/ᴠɪᴅᴇᴏ) ᴜɴᴅᴇʀ 𝟷𝟶ᴍʙ.
+ɪ ᴄᴀɴ ᴄᴏɴᴠᴇʀᴛ ᴀɴʏ ᴍᴇᴅɪᴀ (ᴘʜᴏᴛᴏ/ᴠɪᴅᴇᴏ/ɢɪғ) ᴜɴᴅᴇʀ 𝟷𝟶ᴍʙ ɪɴᴛᴏ ʟɪɴᴋs.
 
-ᴍʏ ᴄʀᴇᴀᴛᴏʀ : <a href='https://telegram.me/CodeXBro'>ʀᴀʜᴜʟ</a>**"""
+ᴊᴜsᴛ sᴇɴᴛ ᴍᴇ ᴍᴇᴅɪᴀ ᴅᴏɴᴛ ɴᴇᴇᴅ ᴛᴏ ᴇɴᴛᴇʀ ᴜsᴇ ʟᴇss ᴄᴏᴍᴍᴀɴᴅ ᴀɴᴅ sᴇᴇ ᴍʏ ᴍᴀɢɪᴄ
+
+ᴍʏ ᴄʀᴇᴀᴛᴏʀ : <a href='https://telegram.me/silicon_bot_Update'>sɪʟɪᴄᴏɴ ᴅᴇᴠᴇʟᴏᴘᴇʀ ⚠️</a>**"""
 
 ABOUT_TEXT = """**{},
 
-🤖 ɪ ᴀᴍ [ᴍᴇᴅɪᴀ ᴛᴏ ᴜʀʟ ʙᴏᴛ](https://telegram.me/MediaToUrlBot)
+🤖 ɪ ᴀᴍ : ᴍᴇᴅɪᴀ ᴛᴏ ᴜʀʟ ʙᴏᴛ
 ⚙️ ᴄʜɪʟʟɪɴɢ ᴏɴ : <a href="https://www.heroku.com/">ʜᴇʀᴏᴋᴜ</a>
 🍿 ʙʀᴀɪɴ ꜰᴜᴇʟᴇᴅ : <a href="https://www.mongodb.com/">ᴍᴏɴɢᴏ ᴅʙ</a>
 😚 ᴄᴏᴅɪɴɢ ᴍᴜsᴄʟᴇs : <a href="https://www.python.org/">ᴘʏᴛʜᴏɴ 3</a>
-👨‍💻 ᴍʏ ᴄʀᴇᴀᴛᴏʀ : <a href="https://telegram.me/CodeXBro">ʀᴀʜᴜʟ</a>
-😜 ʀᴇᴘᴏ : <a href="https://github.com/CodeXBots">ʟɪɴᴋ</a>**"""
+👨‍💻 ᴍʏ ᴄʀᴇᴀᴛᴏʀ : <a href='https://telegram.me/silicon_bot_Update'>sɪʟɪᴄᴏɴ ᴅᴇᴠᴇʟᴏᴘᴇʀ ⚠️</a>
+**"""
 
 DONATE_TXT = """<blockquote>❤️‍🔥 𝐓𝐡𝐚𝐧𝐤𝐬 𝐟𝐨𝐫 𝐬𝐡𝐨𝐰𝐢𝐧𝐠 𝐢𝐧𝐭𝐞𝐫𝐞𝐬𝐭 𝐢𝐧 𝐃𝐨𝐧𝐚𝐭𝐢𝐨𝐧</blockquote>
 
@@ -52,7 +54,7 @@ DONATE_TXT = """<blockquote>❤️‍🔥 𝐓𝐡𝐚𝐧𝐤𝐬 𝐟𝐨𝐫 
 
 ❣️ 𝐷𝑜𝑛𝑎𝑡𝑖𝑜𝑛𝑠 𝑎𝑟𝑒 𝑟𝑒𝑎𝑙𝑙𝑦 𝑎𝑝𝑝𝑟𝑒𝑐𝑖𝑎𝑡𝑒𝑑 𝑖𝑡 ℎ𝑒𝑙𝑝𝑠 𝑖𝑛 𝑏𝑜𝑡 𝑑𝑒𝑣𝑒𝑙𝑜𝑝𝑚𝑒𝑛𝑡
 
-💖 𝐔𝐏𝐈 𝐈𝐃 : <code>RahulReviews@UPI</code>
+💖 𝐔𝐏𝐈 𝐈𝐃 : <code>pay-to-yash-singh@fam</code>
 """
 
 FORCE_SUBSCRIBE_TEXT = """ 
@@ -62,18 +64,16 @@ FORCE_SUBSCRIBE_TEXT = """
 
 START_BUTTONS = InlineKeyboardMarkup(
     [[
-        InlineKeyboardButton('ᴅᴇᴠᴇʟᴏᴘᴇʀ', url='https://youtube.com/@RahulReviews')
+        InlineKeyboardButton('ᴜᴘᴅᴀᴛᴇ', url='https://t.me/Silicon_Bot_Update')
     ],[
         InlineKeyboardButton('ᴀʙᴏᴜᴛ', callback_data='about'),
-        InlineKeyboardButton('ꜱᴜᴘᴘᴏʀᴛ', url='https://telegram.me/CodeXSupport')
+        InlineKeyboardButton('ꜱᴜᴘᴘᴏʀᴛ', url='https://telegram.me/Silicon_Botz')
     ]]
 )
 
 ABOUT_BUTTONS = InlineKeyboardMarkup(
     [[
-        InlineKeyboardButton('🫡 ᴅᴏɴᴀᴛᴇ', url='https://codexbots.github.io/Donate'),
-        InlineKeyboardButton('👨‍💻 ᴏᴡɴᴇʀ', url='https://telegram.me/CodexBro')
-    ],[
+        InlineKeyboardButton('👨‍💻 ᴏᴡɴᴇʀ', url='https://telegram.me/CodexBro'),
         InlineKeyboardButton('⋞ ʙᴀᴄᴋ', callback_data='home')
     ]]
 )
@@ -208,25 +208,25 @@ async def upload(client, message):
             except Exception as error:
                 logging.exception(f"Error checking user subscription: {error}")
                 await message.reply_text(
-                    "<b>ꜱᴏᴍᴇᴛʜɪɴɢ ᴡᴇɴᴛ ᴡʀᴏɴɢ. Contact <a href='https://telegram.me/CodeXBro'>Creator</a>.</b>", 
+                    "<b>ꜱᴏᴍᴇᴛʜɪɴɢ ᴡᴇɴᴛ ᴡʀᴏɴɢ. Contact <a href='https://telegram.me/Silicon_Official'>Creator</a>.</b>", 
                     disable_web_page_preview=True
                 )
                 return
 
         file_size_limit = 10 * 1024 * 1024  # 10 MB in bytes
         if (message.document and message.document.file_size > file_size_limit) or (message.photo and message.photo.file_size > file_size_limit):
-            await message.reply_text("<b>⚠️ Send a media file under 10 MB</b>")
+            await message.reply_text("<b>⚠️ ᴘʟᴇᴀsᴇ sᴇɴᴛ ғɪʟᴇ ᴜɴᴅᴇʀ 10 ᴍʙ</b>")
             logging.warning(f"User {message.chat.id} tried to send a file larger than 10 MB.")
             return
 
         # Send a message to choose the upload service
         await client.send_message(
             chat_id=message.chat.id,
-            text="<b>Select upload service:</b>n<code>Please choose one of the options below:</code>",
+            text="<b>Sᴇʟᴇᴄᴛ Tʜᴇ Uᴘʟᴏᴀᴅ Sᴇʀᴠɪᴄᴇ:</b>\n\n<code>Pʟᴇᴀsᴇ Cʜᴏᴏsᴇ Oᴘᴛɪᴏɴ Fʀᴏᴍ Bᴇʟᴏᴡ </code>",
             reply_markup=InlineKeyboardMarkup(
                                 [[
-                    InlineKeyboardButton(text="envs.sh", callback_data="upload_envs.sh"),
-                    InlineKeyboardButton(text="imgbb", callback_data="upload_imgbb")
+                    InlineKeyboardButton(text="ᴇɴᴠs.sʜ", callback_data="upload_envs.sh"),
+                    InlineKeyboardButton(text="ɪᴍɢʙʙ", callback_data="upload_imgbb")
                                 ]]
                         ),
             reply_to_message_id=message.id
@@ -245,7 +245,7 @@ async def handle_upload(client, query, upload_service):
         # Get the original message that had the media (the message that the buttons were replying to)
         original_message = query.message.reply_to_message
         if not original_message or not (original_message.photo or original_message.document):
-            await query.message.reply_text("⚠️ Please reply to a media message to upload.")
+            await query.message.reply_text("⚠️ ᴘʟᴇᴀsᴇ ʀᴇᴘʟʏ ᴛᴏ ᴍᴇᴅɪᴀ ᴛᴏ ᴜᴘʟᴏᴀᴅ.")
             logging.warning(f"User {query.from_user.id} did not reply to a media message.")
             return
 
@@ -253,7 +253,7 @@ async def handle_upload(client, query, upload_service):
         logging.info(f"Downloading media for user {query.from_user.id}.")
         path = await original_message.download()
 
-        uploading_message = await query.message.reply_text(f"<code>Uploading to {upload_service}...</code>")
+        uploading_message = await query.message.reply_text(f"<code>ᴜᴘʟᴏᴀᴅɪɴɢ ᴍᴇᴅɪᴀ ᴛᴏ {upload_service}...</code>")
         logging.info(f"Uploading media to {upload_service} for user {query.from_user.id}.")
 
         try:
@@ -274,7 +274,7 @@ async def handle_upload(client, query, upload_service):
         await uploading_message.delete()
         await query.message.reply_photo(
             photo=image_url,
-            caption=f"<b>Upload completed to {upload_service} 👇</b>\n\nLink:\n\n<code>{image_url}</code>\n\n<b>ʙʏ - <a href='https://telegram.me/CodeXBro'>ʀᴀʜᴜʟ</a></b>",
+            caption=f"<b>ᴜᴘʟᴏᴀᴅ ᴄᴏᴍᴘʟᴇᴛᴇ ᴛᴏ {upload_service} 👇</b>\n\nLink:\n\n<code>{image_url}</code>\n\n<b>ʙʏ - <a href='https://telegram.me/Silicon_Official'>Sɪʟɪᴄᴏɴ Dᴇᴠᴇʟᴏᴘᴇʀ ⚠️</a></b>",
             reply_markup=InlineKeyboardMarkup([[
                 InlineKeyboardButton(text="• ᴏᴘᴇɴ ʟɪɴᴋ •", url=image_url),
                 InlineKeyboardButton(text="• sʜᴀʀᴇ ʟɪɴᴋ •", url=f"https://telegram.me/share/url?url={image_url}")
@@ -283,11 +283,8 @@ async def handle_upload(client, query, upload_service):
             ]])
         )
         logging.info(f"Upload link sent to user {query.from_user.id}.")
-
-        await asyncio.sleep(120)
         await query.message.delete()
         logging.info(f"Message deleted after 120 seconds for user {query.from_user.id}.")
-
     except Exception as e:
         logging.exception(f"Error in callback handler: {e}")
 
