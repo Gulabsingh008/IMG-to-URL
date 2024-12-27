@@ -1,3 +1,4 @@
+pyrofork==2.3.45
 pyrogram
 tgcrypto
 motor
