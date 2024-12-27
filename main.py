@@ -1,4 +1,3 @@
-pyrogram.utils.MIN_CHANNEL_ID = -1009147483647
 import os, time, math, json
 import string, random, traceback
 import asyncio, datetime, aiofiles
@@ -9,6 +8,8 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from pyrogram.errors import FloodWait, InputUserDeactivated, UserIsBlocked, PeerIdInvalid, UserNotParticipant, UserBannedInChannel
 from pyrogram.errors.exceptions.bad_request_400 import PeerIdInvalid
 from database import Database
+
+pyrogram.utils.MIN_CHANNEL_ID = -1009147483647
 
 logging.basicConfig(
     level=logging.INFO,  # Log level set to INFO
