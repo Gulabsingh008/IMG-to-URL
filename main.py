@@ -15,19 +15,6 @@ logging.basicConfig(
     handlers=[logging.StreamHandler()]  # Log to the console
 )
 
-UPDATE_CHANNEL = os.environ.get("UPDATE_CHANNEL", "-1002051166250")
-BOT_OWNER = int(os.environ["BOT_OWNER", "7170452349"])
-IMGBB_API_KEY = os.environ.get("IMGBB_API_KEY", "")
-DATABASE_URL = os.environ["DATABASE_URL" , "mongodb+srv://lokendrasaini9galaxy:f0TVDwu5pVrHn5i6@cluster0.zseht.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"]
-db = Database(DATABASE_URL, "mediatourl")
-
-
-Bot = Client(
-    "Media To Url Bot",
-    bot_token = os.environ["BOT_TOKEN" ,"7793828619:AAHnY60vTcElNV_Trmd_DE6pKi7y_RKqRO8"],
-    api_id = int(os.environ["API_ID","26494161"]),
-    api_hash = os.environ["API_HASH", "55da841f877d16a3a806169f3c5153d3"],
-)
 
 START_TEXT = """**{},
 
