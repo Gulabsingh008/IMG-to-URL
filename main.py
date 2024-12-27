@@ -1,3 +1,4 @@
+pyrogram.utils.MIN_CHANNEL_ID = -1009147483647
 import os, time, math, json
 import string, random, traceback
 import asyncio, datetime, aiofiles
